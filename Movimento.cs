@@ -11,9 +11,9 @@ public class Movimento : MonoBehaviour {
     public GameObject cam;
     private Vector2 posZero;
     private Vector2 posCam;
+	public bool troucouFase = false;
 
     //movimento
-    private string movimentoPlayer = "Parado";
     public string estadoPlayer = "Chao";
     private Vector2 final;
 
@@ -25,27 +25,32 @@ public class Movimento : MonoBehaviour {
 
     void Update() {
 
+		if(troucouFase){
+			player.GetComponent<SraCookies> ().speed = 0;
+			estadoPlayer = "Chao";
+			troucouFase = false;
+		}
+
         posCam = new Vector2(cam.transform.position.x, cam.transform.position.y);
 
-        print(final);
-        /////Verificar a Direção/////
+        /////Movimentacao/////
 
         if (final.x > 1.5f)
         {
-            movimentoPlayer = "Direita";
+			final.x = 0;
+			if (player.GetComponent<SraCookies> ().speed <= 0) {
+				player.GetComponent<SraCookies> ().speed += 7;
+			}
+			else if (player.GetComponent<SraCookies> ().speed >= 7 && player.GetComponent<SraCookies> ().speed < 13) {
+				player.GetComponent<SraCookies> ().speed += 3;
+			}
         }
         if (final.x < -1.5f)
         {
-            movimentoPlayer = "Esquerda";
-        }
-
-        /////Fazer mover/////
-        if (movimentoPlayer == "Direita") {
-            player.GetComponent<SraCookies>().Direita();
-        }
-        if (movimentoPlayer == "Esquerda")
-        {
-            player.GetComponent<SraCookies>().Esquerda();
+			final.x = 0;
+			if (player.GetComponent<SraCookies> ().speed > 7 && player.GetComponent<SraCookies> ().speed <= 13) {
+				player.GetComponent<SraCookies> ().speed -= 3;
+			}
         }
 
         /////Pulo/////

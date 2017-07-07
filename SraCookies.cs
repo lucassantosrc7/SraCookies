@@ -2,79 +2,87 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class SraCookies : MonoBehaviour
-{
+public class SraCookies : MonoBehaviour {
 
     public GameObject GameController;
+	public Vector2 posIni;
 
-    public int vida = 15;
+    public int vida = 3;
     public float speed;
     private Rigidbody2D rb;
     private Vector2 jumpForce = new Vector2(0, 350);
 
-    //tiro
-    public float reloadTime = .2f;
-    public ObjPool objPool;
-    private float timeForNextShot;
-    public GameObject especial;
-    public int chamaEspecial;
+	private Animator anim;
+	private string animacao;
+	private string animacaoAntiga;
 
-    //Estado do Player
-    public string playerArma = "Pistola";
+	private AudioSource Source;
+	private AudioClip atual;
+	private AudioClip antiga;
+	public AudioClip Pular;
+	public AudioClip Andar;
+	public AudioClip Morrer;
+
 
     void Start()
     {
         rb = GetComponent<Rigidbody2D>();
+		posIni = transform.position;
+
+		Source = GetComponent<AudioSource>();
+		anim = GetComponent<Animator>();
     }
 
 
     void Update()
     {
-        //Tiro
-		Vector2 position = new Vector2(transform.position.x - transform.localScale.x/2, transform.position.y + 0.5f);
 
-        if (Time.time >= timeForNextShot && GameController.GetComponent<Movimento>().atirar)
-        {
-			if (playerArma == "Pistola") {
-				GameObject bullet = objPool.Pistola ();
-				bullet.SetActive (true);
-				bullet.transform.position = position;
-				timeForNextShot = Time.time + reloadTime;
-			}
-			else if (playerArma == "Shotgun") {
-				GameObject bullet = objPool.Shotgun ();
-				bullet.SetActive (true);
-				bullet.transform.position = position;
-				timeForNextShot = Time.time + reloadTime;
-			}
-        }
+		if(animacao != animacaoAntiga){
+			anim.SetBool(animacaoAntiga, false);
+			animacaoAntiga = animacao;
+		}else{ anim.SetBool(animacaoAntiga, true);}
 
-        if (chamaEspecial > 20) {
-            especial.gameObject.SetActive(true);
-        }
+
+		if (vida == 0) {
+			vida--;
+		}
+		else if(vida <= -1){
+			transform.position = posIni;
+			vida = 3;
+			if(!Source.isPlaying){
+				Source.PlayOneShot(Morrer);
+			}
+		}
+
+		transform.Translate(Vector2.right * speed * Time.deltaTime);
+		transform.localScale = new Vector3(-1.5f, 2.8f, 1);
+
+		if (GameController.GetComponent<Movimento> ().estadoPlayer == "Chao" && speed > 0) { 
+			animacao = "Correr";
+			if (!Source.isPlaying) {
+				Source.PlayOneShot (Andar);
+			}
+		} else {
+			animacao = "Idle";
+			if (!Source.isPlaying) {
+				Source.Stop ();
+			}
+		}
     }
 
     public void Cima()
     {
         rb.velocity = Vector2.zero;
         rb.AddForce(jumpForce);
-    }
-
-    public void Esquerda()
-    {
-        transform.Translate(Vector2.left * speed * Time.deltaTime);
-        transform.localScale = new Vector3(1.5f, 2.8f, 1);
-    }
-
-    public void Direita()
-    {
-        transform.Translate(Vector2.right * speed * Time.deltaTime);
-        transform.localScale = new Vector3(-1.5f, 2.8f, 1);
+		Source.Stop ();
+		Source.PlayOneShot (Pular);
+		animacao = "Pular";
     }
 
     void OnCollisionEnter2D(Collision2D hit)
     {
         if (hit.transform.CompareTag("Chao")) {
+			
             GameController.GetComponent<Movimento>().estadoPlayer = "Chao";
         }
     }

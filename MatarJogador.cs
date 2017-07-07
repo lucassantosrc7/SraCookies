@@ -2,13 +2,14 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Buraco : MonoBehaviour {
+public class MatarJogador : MonoBehaviour {
 
 	void OnTriggerEnter2D(Collider2D hit)
 	{
 		if (hit.CompareTag("Player"))
 		{
-			hit.GetComponent<SraCookies>().vida = 0;
+			hit.gameObject.GetComponent<SrCookiesBoss>().vida = 0;
+			Destroy(gameObject);
 		}
 	}
 }

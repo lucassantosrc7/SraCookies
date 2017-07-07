@@ -1,0 +1,15 @@
+﻿using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+
+public class RecuperVida : MonoBehaviour {
+
+    void OnTriggerEnter2D(Collider2D hit)
+    {
+        if (hit.CompareTag("Player"))
+        {
+            hit.gameObject.GetComponent<SraCookies>().vida ++;
+			gameObject.SetActive (false);
+        }
+    }
+}

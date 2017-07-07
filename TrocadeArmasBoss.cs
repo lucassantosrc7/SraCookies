@@ -2,25 +2,26 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class TrocadeArmas : MonoBehaviour {
+public class TrocadeArmasBoss : MonoBehaviour {
+
 
 	public GameObject player;
 
 	public GameObject pistola;
 	public GameObject shotgun;
-    public GameObject especial;
+	public GameObject especial;
 
 	public void Pistola(){
 		pistola.SetActive (true);
 		shotgun.SetActive (false);
-		player.GetComponent<TiroPlayer>().playerArma = "Pistola";
+		player.GetComponent<TiroPlayerBoss>().playerArma = "Pistola";
 	}
 	public void Shotgun(){
 		pistola.SetActive (false);
 		shotgun.SetActive (true);
-		player.GetComponent<TiroPlayer>().playerArma = "Shotgun";
+		player.GetComponent<TiroPlayerBoss>().playerArma = "Shotgun";
 	}
-    public void Especial() {
-        especial.GetComponent<Especial>().especial = true;
-    }
+	public void Especial() {
+		especial.GetComponent<Especial>().especial = true;
+	}
 }

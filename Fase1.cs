@@ -2,13 +2,15 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Buraco : MonoBehaviour {
+public class Fase1 : MonoBehaviour {
+
+	public GameObject chamaFase;
 
 	void OnTriggerEnter2D(Collider2D hit)
 	{
 		if (hit.CompareTag("Player"))
 		{
-			hit.GetComponent<SraCookies>().vida = 0;
+			chamaFase.SendMessage ("ChangeScreen", ChamaFase.Screens.boss);
 		}
 	}
 }
